@@ -2890,8 +2890,8 @@ static inline void printEEScoreMsg(
  * -
  */
 #ifdef WITH_TBB
-#else
 void multiseedSearchWorker_hisat::operator()() {
+#else
 static void multiseedSearchWorker_hisat(void *vp) {
 #endif
 	int tid = *((int*)vp);
