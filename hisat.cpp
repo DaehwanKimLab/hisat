@@ -68,7 +68,7 @@ class multiseedSearchWorker_hisat {
 	int tid;
 
 public:
-	multiseedSearchWorker_hisat(const multiseedSearchWorker& W): tid(W.tid) {};
+	multiseedSearchWorker_hisat(const multiseedSearchWorker_hisat& W): tid(W.tid) {};
 	multiseedSearchWorker_hisat(int id):tid(id) {};
 	void operator()();
 };
@@ -2893,8 +2893,8 @@ static inline void printEEScoreMsg(
 void multiseedSearchWorker_hisat::operator()() {
 #else
 static void multiseedSearchWorker_hisat(void *vp) {
+    int tid = *((int*)vp);
 #endif
-	int tid = *((int*)vp);
 	assert(multiseed_ebwtFw != NULL);
 	assert(multiseedMms == 0 || multiseed_ebwtBw != NULL);
 	PairedPatternSource&             patsrc   = *multiseed_patsrc;
@@ -3456,8 +3456,7 @@ static void multiseedSearch(
 
 		for(int i = 0; i < nthreads; i++) {
 #ifdef WITH_TBB
-            tbb_grp.run(multiseedSearchWorker_hisat(i));
-            tbb_grp.wait();
+            tbb_grp.run(multiseedSearchWorker_hisat(i+1));
 #else
 			// Thread IDs start at 1
 			tids[i] = i+1;
@@ -3465,8 +3464,10 @@ static void multiseedSearch(
 #endif
 		}
 
-#ifndef WITH_TBB
-        for (int i = 1; i <= nthreads; i++)
+#ifdef WITH_TBB
+        tbb_grp.wait();
+#else
+        for (int i = 0; i < nthreads; i++)
             threads[i]->join();
 #endif
 

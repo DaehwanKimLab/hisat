@@ -639,7 +639,7 @@ _empty(true)
         _bwIndex.push_back(new RedBlack<SpliceSitePos, uint32_t>(16 << 10, CA_CAT));
         _pool.expand();
         _spliceSites.expand();
-        _mutex.push_back(MUTEX_T());
+        _mutex.push_back(new MUTEX_T());
     }
     
     donorstr.resize(donor_exonic_len + donor_intronic_len);
@@ -650,6 +650,7 @@ SpliceSiteDB::~SpliceSiteDB() {
     assert_eq(_fwIndex.size(), _bwIndex.size());
     assert_eq(_fwIndex.size(), _pool.size());
     for(uint64_t i = 0; i < _numRefs; i++) {
+        delete _mutex[i];
         delete _fwIndex[i];
         delete _bwIndex[i];
         
@@ -667,7 +668,7 @@ size_t SpliceSiteDB::size(uint64_t ref) const {
     assert_lt(ref, _mutex.size());
     assert_lt(ref, _fwIndex.size());
     assert_eq(_fwIndex.size(), _bwIndex.size());
-    ThreadSafe t(const_cast<MUTEX_T*>(&_mutex[ref]), _threadSafe && _write);
+    ThreadSafe t(const_cast<MUTEX_T*>(_mutex[ref]), _threadSafe && _write);
     return _fwIndex.size();
 }
 
@@ -729,7 +730,7 @@ bool SpliceSiteDB::addSpliceSite(
                     if(leftAnchorLen >= minLeftAnchorLen && rightAnchorLen >= minRightAnchorLen) {
                         bool added = false;
                         assert_lt(ref, _mutex.size());
-                        ThreadSafe t(&_mutex[ref], _threadSafe && _write);
+                        ThreadSafe t(_mutex[ref], _threadSafe && _write);
                         assert_lt(ref, _fwIndex.size());
                         assert(_fwIndex[ref] != NULL);
                         Node *cur = _fwIndex[ref]->add(pool(ref), ssp, &added);
@@ -793,7 +794,7 @@ bool SpliceSiteDB::addSpliceSite(
         if(leftAnchorLen >= minLeftAnchorLen && rightAnchorLen >= minRightAnchorLen) {
             bool added = false;
             assert_lt(ref, _mutex.size());
-            ThreadSafe t(&_mutex[ref], _threadSafe && _write);
+            ThreadSafe t(_mutex[ref], _threadSafe && _write);
             assert_lt(ref, _fwIndex.size());
             assert(_fwIndex[ref] != NULL);
             Node *cur = _fwIndex[ref]->add(pool(ref), ssp, &added);
@@ -845,7 +846,7 @@ bool SpliceSiteDB::getSpliceSite(SpliceSite& ss) const
     uint64_t ref = ss.ref();
     assert_lt(ref, _numRefs);
     assert_lt(ref, _mutex.size());
-    ThreadSafe t(const_cast<MUTEX_T*>(&_mutex[ref]), _threadSafe && _write);
+    ThreadSafe t(const_cast<MUTEX_T*>(_mutex[ref]), _threadSafe && _write);
     
     assert_lt(ref, _fwIndex.size());
     assert(_fwIndex[ref] != NULL);
@@ -863,7 +864,7 @@ void SpliceSiteDB::getLeftSpliceSites(uint32_t ref, uint32_t left, uint32_t rang
     
     assert_lt(ref, _numRefs);
     assert_lt(ref, _mutex.size());
-    ThreadSafe t(const_cast<MUTEX_T*>(&_mutex[ref]), _threadSafe && _write);
+    ThreadSafe t(const_cast<MUTEX_T*>(_mutex[ref]), _threadSafe && _write);
     assert_gt(range, 0);
     assert_geq(left + 1, range);
     assert_lt(ref, _bwIndex.size());
@@ -878,7 +879,7 @@ void SpliceSiteDB::getRightSpliceSites(uint32_t ref, uint32_t right, uint32_t ra
     
     assert_lt(ref, _numRefs);
     assert_lt(ref, _mutex.size());
-    ThreadSafe t(const_cast<MUTEX_T*>(&_mutex[ref]), _threadSafe && _write);
+    ThreadSafe t(const_cast<MUTEX_T*>(_mutex[ref]), _threadSafe && _write);
     assert_gt(range, 0);
     assert_gt(right + range, range);
     assert_lt(ref, _fwIndex.size());

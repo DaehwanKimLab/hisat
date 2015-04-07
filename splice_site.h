@@ -503,7 +503,7 @@ private:
     bool                                _write;
     bool                                _read;
     
-    EList<MUTEX_T>                      _mutex;
+    EList<MUTEX_T*>                     _mutex;
     bool                                _threadSafe;
     
     SStringExpandable<char>             raw_refbuf;
