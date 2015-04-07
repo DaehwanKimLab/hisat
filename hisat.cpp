@@ -59,6 +59,22 @@
 #include "outq.h"
 #include "aligner_seed2.h"
 
+#ifdef WITH_TBB
+
+#include <tbb/tbb.h>
+#include <tbb/task_group.h>
+
+class multiseedSearchWorker_hisat {
+	int tid;
+
+public:
+	multiseedSearchWorker_hisat(const multiseedSearchWorker& W): tid(W.tid) {};
+	multiseedSearchWorker_hisat(int id):tid(id) {};
+	void operator()();
+};
+
+#endif /* WITH_TBB */
+
 using namespace std;
 
 static EList<string> mates1;  // mated reads (first mate)
@@ -2873,7 +2889,11 @@ static inline void printEEScoreMsg(
  *   + If not identical, continue
  * -
  */
+#ifdef WITH_TBB
+#else
+void multiseedSearchWorker_hisat::operator()() {
 static void multiseedSearchWorker_hisat(void *vp) {
+#endif
 	int tid = *((int*)vp);
 	assert(multiseed_ebwtFw != NULL);
 	assert(multiseedMms == 0 || multiseed_ebwtBw != NULL);
@@ -3390,8 +3410,12 @@ static void multiseedSearch(
 	multiseed_sc     = &sc;
 	multiseed_metricsOfb      = metricsOfb;
 	multiseed_refs = refs;
+#ifdef WITH_TBB
+	tbb::task_group tbb_grp;
+#else
 	AutoArray<tthread::thread*> threads(nthreads);
 	AutoArray<int> tids(nthreads);
+#endif
 	{
 		// Load the other half of the index into memory
 		assert(!ebwtFw.isInMemory());
@@ -3431,13 +3455,20 @@ static void multiseedSearch(
         thread_rids_mindist = (nthreads == 1 || !useTempSpliceSite ? 0 : 1000 * nthreads);
 
 		for(int i = 0; i < nthreads; i++) {
+#ifdef WITH_TBB
+            tbb_grp.run(multiseedSearchWorker_hisat(i));
+            tbb_grp.wait();
+#else
 			// Thread IDs start at 1
 			tids[i] = i+1;
             threads[i] = new tthread::thread(multiseedSearchWorker_hisat, (void*)&tids[i]);
+#endif
 		}
 
-        for (int i = 0; i < nthreads; i++)
+#ifndef WITH_TBB
+        for (int i = 1; i <= nthreads; i++)
             threads[i]->join();
+#endif
 
 	}
 	if(!metricsPerRead && (metricsOfb != NULL || metricsStderr)) {

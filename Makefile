@@ -82,6 +82,13 @@ else
 	PTHREAD_LIB = -lpthread
 endif
 
+ifeq (1,$(WITH_TBB))
+	LIBS = $(PTHREAD_LIB) -ltbb -ltbbmalloc_proxy
+	EXTRA_FLAGS += -DWITH_TBB
+else
+	LIBS = $(PTHREAD_LIB)
+endif
+
 SEARCH_LIBS = 
 BUILD_LIBS = 
 INSPECT_LIBS =
@@ -107,7 +114,12 @@ LIBS = $(PTHREAD_LIB)
 SHARED_CPPS = ccnt_lut.cpp ref_read.cpp alphabet.cpp shmem.cpp \
 	edit.cpp bt2_idx.cpp \
 	reference.cpp ds.cpp multikey_qsort.cpp limit.cpp \
-	random_source.cpp tinythread.cpp
+	random_source.cpp
+
+ifneq (1,$(WITH_TBB))
+	SHARED_CPPS += tinythread.cpp
+endif
+
 SEARCH_CPPS = qual.cpp pat.cpp sam.cpp \
 	read_qseq.cpp aligner_seed_policy.cpp \
 	aligner_seed.cpp \
