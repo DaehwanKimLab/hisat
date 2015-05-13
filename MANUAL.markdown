@@ -355,7 +355,7 @@ filehandle.
 
 </td><td>
 
-Comma-separated list of SRA accession numbers, e.g. `--sra-acc SRR353653,SRR353654`.
+Comma-separated list of SRA accession numbers, e.g. `--sra-acc SRR353653,SRR353654`.  HISAT will determine whether reads are single-end or paired end and process them accordingly.
 
 </td></tr><tr><td>
 

@@ -776,12 +776,14 @@ static void printUsage(ostream& out) {
 		<< "   --sensitive            -D 15 -R 2 -N 0 -L 22 -i S,1,1.15 (default)" << endl
 		<< "   --very-sensitive       -D 20 -R 3 -N 0 -L 20 -i S,1,0.50" << endl
 		<< endl
+#if 0
 		<< "  For --local:" << endl
 		<< "   --very-fast-local      -D 5 -R 1 -N 0 -L 25 -i S,1,2.00" << endl
 		<< "   --fast-local           -D 10 -R 2 -N 0 -L 22 -i S,1,1.75" << endl
 		<< "   --sensitive-local      -D 15 -R 2 -N 0 -L 20 -i S,1,0.75 (default)" << endl
 		<< "   --very-sensitive-local -D 20 -R 3 -N 0 -L 20 -i S,1,0.50" << endl
 		<< endl
+#endif
 	    << " Alignment:" << endl
 		<< "  -N <int>           max # mismatches in seed alignment; can be 0 or 1 (0)" << endl
 		<< "  -L <int>           length of seed substrings; must be >3, <32 (22)" << endl
