@@ -163,7 +163,7 @@ because it exceeded a limit placed on search effort (see [`-D`] and [`-R`]) or
 because it already knows all it needs to know to report an alignment.
 Information from the best alignments are used to estimate mapping quality (the
 `MAPQ` [SAM] field) and to set SAM optional fields, such as [`AS:i`] and
-[`XS:i`].  HISAT does not gaurantee that the alignment reported is the best
+[`ZS:i`].  HISAT does not gaurantee that the alignment reported is the best
 possible in terms of alignment score.
 -->
 
@@ -1584,6 +1584,18 @@ alignment:
     Alignment score.  Can be negative.  Can be greater than 0 in [`--local`]
     mode (but not in [`--end-to-end`] mode).  Only present if SAM record is for
     an aligned read.
+
+    </td></tr>
+    <tr><td id="hisat-build-opt-fields-zs">
+
+        ZS:i:<N>
+
+    </td>
+    <td>
+
+    Alignment score for the best-scoring alignment found other than the alignment reported. Can be negative. 
+    Only present if the SAM record is for an aligned read and more than one alignment was found for the read. 
+    Note that, when the read is part of a concordantly-aligned pair, this score could be greater than AS:i. 
 
     </td></tr>
     <tr><td id="hisat-build-opt-fields-ys">

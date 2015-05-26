@@ -137,20 +137,17 @@ void SamConfig::printAlignedOptFlags(
 		o.append("AS:i:");
 		o.append(buf);
 	}
-    
-    // Do not output suboptimal alignment score, which conflicts with Cufflinks and StringTie
-#if 0
 	if(print_xs_) {
-		// XS:i: Suboptimal alignment score
+	  // XS:i: Suboptimal alignment score
+	  // Use ZS:i: to avoid conflict with XS:A:
 		AlnScore sco = summ.secbestMate(rd.mate < 2);
 		if(sco.valid()) {
 			itoa10<TAlScore>(sco.score(), buf);
 			WRITE_SEP();
-			o.append("XS:i:");
+			o.append("ZS:i:");
 			o.append(buf);
 		}
 	}
-#endif
 	if(print_xn_) {
 		// XN:i: Number of ambiguous bases in the referenece
 		itoa10<size_t>(res.refNs(), buf);
