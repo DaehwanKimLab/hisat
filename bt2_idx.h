@@ -3136,7 +3136,7 @@ void Ebwt<index_t>::buildToDisk(
  * exact path given by the user.  Then try the user-provided string
  * appended onto the path of the "indexes" subdirectory below this
  * executable, then try the provided string appended onto
- * "$BOWTIE2_INDEXES/".
+ * "$HISAT_INDEXES/".
  */
 string adjustEbwtBase(const string& cmdline,
 					  const string& ebwtFileBase,
