@@ -338,7 +338,7 @@
 			buildPhases = (
 			);
 			buildToolPath = /usr/bin/make;
-			buildWorkingDirectory = /Users/infphilo/work/HISAT/codes/hisat;
+			buildWorkingDirectory = /Users/infphilo/work/HISAT_ex/codes/hisat;
 			dependencies = (
 			);
 			name = "hisat-build-l-debug";
@@ -352,7 +352,7 @@
 			buildPhases = (
 			);
 			buildToolPath = /usr/bin/make;
-			buildWorkingDirectory = /Users/infphilo/work/HISAT/codes/hisat;
+			buildWorkingDirectory = /Users/infphilo/work/HISAT_ex/codes/hisat;
 			dependencies = (
 			);
 			name = "hisat-align-l-debug";
@@ -366,7 +366,7 @@
 			buildPhases = (
 			);
 			buildToolPath = /usr/bin/make;
-			buildWorkingDirectory = /Users/infphilo/work/HISAT/codes/hisat;
+			buildWorkingDirectory = /Users/infphilo/work/HISAT_ex/codes/hisat;
 			dependencies = (
 			);
 			name = "hisat-bp-bin-debug";
@@ -380,7 +380,7 @@
 			buildPhases = (
 			);
 			buildToolPath = /usr/bin/make;
-			buildWorkingDirectory = /Users/infphilo/work/HISAT/codes/hisat;
+			buildWorkingDirectory = /Users/infphilo/work/HISAT_ex/codes/hisat;
 			dependencies = (
 			);
 			name = "hisat-align-s-debug";
@@ -394,7 +394,7 @@
 			buildPhases = (
 			);
 			buildToolPath = /usr/bin/make;
-			buildWorkingDirectory = /Users/infphilo/work/HISAT/codes/hisat;
+			buildWorkingDirectory = /Users/infphilo/work/HISAT_ex/codes/hisat;
 			dependencies = (
 			);
 			name = "hisat-align-l";
@@ -408,7 +408,7 @@
 			buildPhases = (
 			);
 			buildToolPath = /usr/bin/make;
-			buildWorkingDirectory = /Users/infphilo/work/HISAT/codes/hisat;
+			buildWorkingDirectory = /Users/infphilo/work/HISAT_ex/codes/hisat;
 			dependencies = (
 			);
 			name = "hisat-align-s";
@@ -422,7 +422,7 @@
 			buildPhases = (
 			);
 			buildToolPath = /usr/bin/make;
-			buildWorkingDirectory = /Users/infphilo/work/HISAT/codes/hisat;
+			buildWorkingDirectory = /Users/infphilo/work/HISAT_ex/codes/hisat;
 			dependencies = (
 			);
 			name = "hisat-inspect-l-debug";
@@ -436,7 +436,7 @@
 			buildPhases = (
 			);
 			buildToolPath = /usr/bin/make;
-			buildWorkingDirectory = /Users/infphilo/work/HISAT/codes/hisat;
+			buildWorkingDirectory = /Users/infphilo/work/HISAT_ex/codes/hisat;
 			dependencies = (
 			);
 			name = "hisat-inspect-s-debug";
