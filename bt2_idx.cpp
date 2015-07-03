@@ -49,7 +49,7 @@ const std::string gEbwt_ext("bt2");
  * exact path given by the user.  Then try the user-provided string
  * appended onto the path of the "indexes" subdirectory below this
  * executable, then try the provided string appended onto
- * "$BOWTIE2_INDEXES/".
+ * "$HISAT_INDEXES/".
  */
 string adjustEbwtBase(const string& cmdline,
 					  const string& ebwtFileBase,
@@ -62,8 +62,10 @@ string adjustEbwtBase(const string& cmdline,
 	if(!in.is_open()) {
 		if(verbose) cout << "  didn't work" << endl;
 		in.close();
-		if(getenv("BOWTIE2_INDEXES") != NULL) {
-			str = string(getenv("BOWTIE2_INDEXES")) + "/" + ebwtFileBase;
+		char const* val = getenv("HISAT_INDEXES");
+		if(val != NULL) {
+			string hisat_ndx_path = string(val);
+			str = hisat_ndx_path + "/" +  ebwtFileBase;
 			if(verbose) cout << "Trying " << str.c_str() << endl;
 			in.open((str + ".1." + gEbwt_ext).c_str(), ios_base::in | ios::binary);
 			if(!in.is_open()) {
