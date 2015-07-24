@@ -26,12 +26,12 @@ from collections import defaultdict as dd, Counter
 from argparse import ArgumentParser, FileType
 
 
-def extract_splice_sites(gtf_file, verbose=False):
+def extract_splice_sites(annotation_file, verbose=False, ftype='gtf'):
     genes = dd(list)
     trans = {}
 
-    # Parse valid exon lines from the GTF file into a dict by transcript_id
-    for line in gtf_file:
+    # Parse valid exon lines from the annotation file into a dict by transcript_id
+    for line in annotation_file:
 
         line = line.strip()
         if not line or line.startswith('#'):
@@ -49,13 +49,8 @@ def extract_splice_sites(gtf_file, verbose=False):
         if feature != 'exon' or left >= right:
             continue
 
-        values_dict = {}
-        for attr in values.split(';')[:-1]:
-            attr, _, val = attr.strip().partition(' ')
-            values_dict[attr] = val.strip('"')
-
-        if 'gene_id' not in values_dict or \
-                'transcript_id' not in values_dict:
+        values_dict = get_values(values, ftype)
+        if values_dict is None:
             continue
 
         transcript_id = values_dict['transcript_id']
@@ -119,21 +114,61 @@ def extract_splice_sites(gtf_file, verbose=False):
                 sum(exon_lengths.values())/len(trans)),
               file=stderr)
 
+def get_values(values, ftype):
+    values_dict = {}
+    temp_dict = {}
+    if ftype == 'gtf':
+        for attr in values.split(';')[:-1]:
+            attr, _, val = attr.strip().partition(' ')
+            values_dict[attr] = val.strip('"')
+
+        if 'gene_id' not in values_dict or \
+                'transcript_id' not in values_dict:
+            return None
+    else:
+        for attr in values.split(';'):
+            if attr.startswith('Dbxref'):
+                db, xrefs = attr.split('=')
+                for xref in xrefs.split(','):
+                    k, v = xref.split(':')
+                    temp_dict[k] = v
+            else:
+                k, v = attr.split('=')
+                temp_dict[k] = v
+        if 'transcript_id' not in temp_dict or \
+                'GeneID' not in temp_dict:
+            return None
+        values_dict = dict(gene_id=temp_dict['GeneID'],
+                           transcript_id=temp_dict['transcript_id'])    
+    return values_dict
 
 if __name__ == '__main__':
     parser = ArgumentParser(
-        description='Extract splice junctions from a GTF file')
-    parser.add_argument('gtf_file',
+        description='Extract splice junctions from a GTF or GFF3 annotation file')
+    parser.add_argument('annotation_file',
         nargs='?',
         type=FileType('r'),
-        help='input GTF file (use "-" for stdin)')
+        help='input annotation file (use "-" for stdin)')
     parser.add_argument('-v', '--verbose',
         dest='verbose',
         action='store_true',
         help='also print some statistics to stderr')
+    group = parser.add_mutually_exclusive_group(required=False)
+    group.add_argument('-f', '--gff',
+        dest='gtf',
+        action='store_false',
+        help='input file is GFF')
+    group.add_argument('-t', '--gtf',
+        dest='gtf',
+        action='store_true',
+        help='input file is GFF')
 
     args = parser.parse_args()
-    if not args.gtf_file:
+    if not args.annotation_file:
         parser.print_help()
         exit(1)
-    extract_splice_sites(args.gtf_file, args.verbose)
+    if args.gtf:
+        ftype = 'gtf'
+    else:
+        ftype = 'gff'
+    extract_splice_sites(args.annotation_file, args.verbose, ftype)
