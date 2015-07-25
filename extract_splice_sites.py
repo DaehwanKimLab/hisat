@@ -32,7 +32,6 @@ def extract_splice_sites(annotation_file, verbose=False, ftype='gtf'):
 
     # Parse valid exon lines from the annotation file into a dict by transcript_id
     for line in annotation_file:
-
         line = line.strip()
         if not line or line.startswith('#'):
             continue
@@ -52,7 +51,7 @@ def extract_splice_sites(annotation_file, verbose=False, ftype='gtf'):
         values_dict = get_values(values, ftype)
         if values_dict is None:
             continue
-
+        
         transcript_id = values_dict['transcript_id']
         if transcript_id not in trans:
             trans[transcript_id] = [chrom, strand, [[left, right]]]
@@ -114,6 +113,7 @@ def extract_splice_sites(annotation_file, verbose=False, ftype='gtf'):
                 sum(exon_lengths.values())/len(trans)),
               file=stderr)
 
+
 def get_values(values, ftype):
     values_dict = {}
     temp_dict = {}
@@ -126,6 +126,7 @@ def get_values(values, ftype):
                 'transcript_id' not in values_dict:
             return None
     else:
+        assert ftype == 'gff'
         for attr in values.split(';'):
             if attr.startswith('Dbxref'):
                 db, xrefs = attr.split('=')
@@ -141,6 +142,7 @@ def get_values(values, ftype):
         values_dict = dict(gene_id=temp_dict['GeneID'],
                            transcript_id=temp_dict['transcript_id'])    
     return values_dict
+
 
 if __name__ == '__main__':
     parser = ArgumentParser(
@@ -161,7 +163,7 @@ if __name__ == '__main__':
     group.add_argument('-t', '--gtf',
         dest='gtf',
         action='store_true',
-        help='input file is GFF')
+        help='input file is GTF')
 
     args = parser.parse_args()
     if not args.annotation_file:

@@ -805,6 +805,7 @@ which HISAT makes use of to align reads with small anchors.
 You can create such a list using `python extract_splice_sites.py genes.gtf > splicesites.txt`,
 where `extract_splice_sites.py` is included in the HISAT package, `genes.gtf` is a gene annotation file,
 and `splicesites.txt` is a list of splice sites with which you provide HISAT in this mode.
+HISAT also supports GFF3 format, run `python extract_splice_sites.py -f genes.gff3 > splicesites.txt`.
 
 </td></tr>
 
